@@ -28,13 +28,12 @@ jobs:
             REPO_URL="${{ secrets.REPO_URL }}"
             COMPOSE_FILE_NAME="docker-compose.yml"
 
-            mkdir -p "$PROJECT_PATH"
             cd "$PROJECT_PATH"
 
             # Repo yoxdursa klonla, varsa main-ə reset et
             if [ ! -d .git ]; then
               echo "Git repo tapılmadı, klonlayıram..."
-              git clone "$REPO_URL" .
+              git clone "$REPO_URL"
             else
               echo "Repo tapıldı, origin/main-ə sinxronizə edirəm..."
               git fetch --all
