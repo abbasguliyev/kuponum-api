@@ -1,0 +1,97 @@
+services:
+  kuponum_db:
+    image: postgres
+    restart: always
+    container_name: kuponum_db
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "54035:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kuponum_network
+  kuponum_app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: kuponum_app
+    env_file:
+      - .env
+    entrypoint: /app/entrypoint.sh
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./src:/app
+    ports:
+      - "8005:8000"
+    depends_on:
+      - kuponum_db
+      - kuponum_redis
+    networks:
+      - kuponum_network
+  kuponum_redis:
+    image: redis:8.0.3-alpine
+    container_name: kuponum_redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 1s
+      retries: 10
+    networks:
+      - kuponum_network
+  kuponum_celery:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: kuponum_celery
+    env_file:
+      - .env
+    entrypoint: /app/entrypoint.sh
+    command: celery --app=kuponum worker -l INFO
+    volumes:
+      - ./src:/app
+    depends_on:
+      - kuponum_db
+      - kuponum_redis
+    networks:
+      - kuponum_network
+  kuponum_celery_beat:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: kuponum_celery_beat
+    env_file:
+      - .env
+    entrypoint: /app/entrypoint.sh
+    command: celery --app=kuponum beat -l INFO
+    volumes:
+      - ./src:/app
+    depends_on:
+      - kuponum_db
+      - kuponum_redis
+    networks:
+      - kuponum_network
+  kuponum_flower:
+    image: mher/flower
+    container_name: kuponum_flower
+    command: >
+      celery --broker=redis://kuponum_redis:6379/0 flower --port=5555
+    depends_on:
+      - kuponum_redis
+      - kuponum_celery
+    networks:
+      - kuponum_network
+    ports:
+      - "5555:5555"
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  kuponum_network:
+    driver: bridge
+    
