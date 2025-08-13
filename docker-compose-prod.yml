@@ -38,6 +38,8 @@ services:
   kuponum_redis:
     image: redis:8.0.3-alpine
     container_name: kuponum_redis
+    networks:
+      - kuponum_network
   kuponum_celery:
     build:
       context: ./src
