@@ -41,21 +41,7 @@ jobs:
             fi
 
             # Ya da sadəcə: git pull origin main
-            # git pull origin main
-
-            # docker compose və ya docker-compose?
-            if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
-              DOCKER_COMPOSE="docker compose"
-            elif command -v docker-compose >/dev/null 2>&1; then
-              DOCKER_COMPOSE="docker-compose"
-            else
-              echo "ERROR: docker compose/docker-compose quraşdırılmayıb."
-              exit 1
-            fi
-
-            # (İstəyə bağlı) env-ləri yenilə, migrasiya/static
-            # $DOCKER_COMPOSE $COMPOSE_ARG run --rm web python manage.py migrate
-            # $DOCKER_COMPOSE $COMPOSE_ARG run --rm web python manage.py collectstatic --noinput
+            git pull origin main
 
             # Servisləri yenilə
             docker compose down
