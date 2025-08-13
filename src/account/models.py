@@ -27,8 +27,8 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('e-poçt'), unique=True)
-    phone = models.CharField(_('telefon'), max_length=32, null=True, blank=True, unique=False)
-    referral_code = models.CharField(_('referal kodu'), max_length=16, unique=True, editable=False, null=True, blank=True)
+    phone = models.CharField(_('telefon'), max_length=32, null=True, blank=True, unique=True)
+    referral_code = models.CharField(_('referal kodu'), max_length=16, unique=True, editable=False)
     referred_by = models.ForeignKey('self', verbose_name=_('referal edən'), on_delete=models.SET_NULL, null=True, blank=True, related_name='referrals')
     region = models.ForeignKey('regions.Region', verbose_name=_('region'), on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
     is_guest = models.BooleanField(_('qonaq'), default=False)

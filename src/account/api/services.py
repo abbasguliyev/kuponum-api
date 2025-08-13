@@ -33,6 +33,7 @@ def create_user(user_input: UserCreateInput) -> User: # type: ignore
 
     referred_by = None
     if user_input.referred_by_code:
+        print(f"referred_by_code: {user_input.referred_by_code}")
         referred_by = user_list().filter(referral_code=user_input.referred_by_code).last()
         if not referred_by:
             raise ValueError(_("Yanlış referal kod"))
