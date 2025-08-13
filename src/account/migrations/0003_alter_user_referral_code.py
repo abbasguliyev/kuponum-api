@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='referral_code',
-            field=models.CharField(default=django.utils.timezone.now, editable=False, max_length=16, unique=True, verbose_name='referal kodu'),
+            field=models.CharField(default="123456789asdfghj", editable=False, max_length=16, unique=True, verbose_name='referal kodu'),
             preserve_default=False,
         ),
     ]
