@@ -33,9 +33,8 @@ def create_user(user_input: UserCreateInput) -> User: # type: ignore
 
     referred_by = None
     if user_input.referred_by_code:
-        try:
-            referred_by = user_list().get(referral_code=user_input.referred_by_code)
-        except User.DoesNotExist:
+        referred_by = user_list().filter(referral_code=user_input.referred_by_code).last()
+        if not referred_by:
             raise ValueError(_("Yanlış referal kod"))
     
     user = User.objects.create_user(
