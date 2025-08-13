@@ -52,12 +52,12 @@ jobs:
               git reset --hard origin/main
             fi
 
-            # entrypoint.sh permission
-            chmod +x ./src/entrypoint.sh
+            # # entrypoint.sh permission
+            # chmod +x ./src/entrypoint.sh
 
-            # Ya da sadəcə: git pull origin main
-            git pull origin main
+            # # Ya da sadəcə: git pull origin main
+            # git pull origin main
 
-            # Servisləri yenilə
-            docker compose down
-            docker compose -f docker-compose-prod.yml up -d --build --remove-orphans
+            # # Servisləri yenilə
+            # docker compose down
+            # docker compose -f docker-compose-prod.yml up -d --build --remove-orphans
