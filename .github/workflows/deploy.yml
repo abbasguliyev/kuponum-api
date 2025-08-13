@@ -9,23 +9,55 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
 
-    - name: Connect to EC2 instance and deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd ${{ secrets.PROJECT_PATH }}
-          git pull origin main
-          docker compose down
-          docker compose up -d --build
+            PROJECT_PATH="${{ secrets.PROJECT_PATH }}"
+            REPO_URL="${{ secrets.REPO_URL }}"
+            COMPOSE_FILE_NAME="docker-compose.yml"
+
+            mkdir -p "$PROJECT_PATH"
+            cd "$PROJECT_PATH"
+
+            # Repo yoxdursa klonla, varsa main-ə reset et
+            if [ ! -d .git ]; then
+              echo "Git repo tapılmadı, klonlayıram..."
+              git clone "$REPO_URL" .
+            else
+              echo "Repo tapıldı, origin/main-ə sinxronizə edirəm..."
+              git fetch --all
+              git reset --hard origin/main
+            fi
+
+            # Ya da sadəcə: git pull origin main
+            # git pull origin main
+
+            # docker compose və ya docker-compose?
+            if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+              DOCKER_COMPOSE="docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              DOCKER_COMPOSE="docker-compose"
+            else
+              echo "ERROR: docker compose/docker-compose quraşdırılmayıb."
+              exit 1
+            fi
+
+            # (İstəyə bağlı) env-ləri yenilə, migrasiya/static
+            # $DOCKER_COMPOSE $COMPOSE_ARG run --rm web python manage.py migrate
+            # $DOCKER_COMPOSE $COMPOSE_ARG run --rm web python manage.py collectstatic --noinput
+
+            # Servisləri yenilə
+            docker compose down
+            docker compose -f docker-compose-prod.yml up -d --build --remove-orphans
