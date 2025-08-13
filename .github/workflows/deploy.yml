@@ -27,8 +27,21 @@ jobs:
             PROJECT_PATH="${{ secrets.PROJECT_PATH }}"
             REPO_URL="${{ secrets.REPO_URL }}"
 
+            echo "PROJECT_PATH: $PROJECT_PATH"
+            echo "REPO_URL: $REPO_URL"
+            
             cd "$PROJECT_PATH"
-
+            echo "Current directory: $(pwd)"
+            echo "Directory contents:"
+            ls -la
+            
+            echo "Checking .git directory:"
+            if [ -d .git ]; then
+              echo ".git directory EXISTS"
+            else
+              echo ".git directory NOT FOUND"
+            fi
+            
             # Repo yoxdursa klonla, varsa main-ə reset et
             if [ ! -d .git ]; then
               echo "Git repo tapılmadı, klonlayıram..."
