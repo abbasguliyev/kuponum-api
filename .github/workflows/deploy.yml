@@ -40,6 +40,9 @@ jobs:
               git reset --hard origin/main
             fi
 
+            # entrypoint.sh permission
+            chmod +x ./src/entrypoint.sh
+
             # Ya da sadəcə: git pull origin main
             git pull origin main
 
