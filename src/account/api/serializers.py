@@ -21,10 +21,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(
         max_length=32,
         allow_blank=True,
-        allow_null=True,
-        validators=[
-            UniqueValidator(user_list(), message="Bu telefon nömrəsi artıq qeydiyyatdadır.")
-        ]
+        allow_null=True
     )
 
     class Meta:
@@ -37,6 +34,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
         v = str(v).strip()
         if not user_list().filter(referral_code=v).exists():
             raise serializers.ValidationError(_("Yanlış referal kod"))
+        return v
+
+    def validate_phone(self, v):
+        if not v:
+            return None
+        v = str(v).strip()
+        if user_list().filter(phone=v).exists():
+            raise serializers.ValidationError(_("Bu telefon nömrəsi artıq qeydiyyatdadır."))
         return v
 
 class UserSerializer(serializers.ModelSerializer):
