@@ -27,7 +27,7 @@ services:
     volumes:
       - ./src:/app
       - /srv/kuponum/media:/app/media
-      - /src/kuponum/static:/app/static
+      - /srv/kuponum/static:/app/static
     ports:
       - "8000:8000"
     depends_on:
