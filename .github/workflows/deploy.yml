@@ -36,16 +36,16 @@ jobs:
             ls -la
             
             echo "Checking .git directory:"
-            if [ -d .git ]; then
+            if test -d .git ; then
               echo ".git directory EXISTS"
             else
               echo ".git directory NOT FOUND"
             fi
-            
+
             # Repo yoxdursa klonla, varsa main-ə reset et
-            if [ ! -d .git ]; then
+            if test ! -d .git; then
               echo "Git repo tapılmadı, klonlayıram..."
-              git clone "$REPO_URL" .  # <- BU NÖQTƏ ÇOX VACİBDİR!
+              git clone "$REPO_URL" .
             else
               echo "Repo tapıldı, origin/main-ə sinxronizə edirəm..."
               git fetch --all
