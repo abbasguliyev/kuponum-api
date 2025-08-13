@@ -4,7 +4,7 @@ services:
     restart: always
     container_name: kuponum_db
     env_file:
-      - ../.env-production
+      - .env-production
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: kuponum_app
     env_file:
-      - ../.env-production
+      - .env-production
     command: 
       sh -c "python manage.py collectstatic --noinput && gunicorn kuponum.wsgi:application --bind 0.0.0.0:8000"
     volumes:
@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: kuponum_celery
     env_file:
-      - ../.env-production
+      - .env-production
     command: celery --app=kuponum worker -l INFO
     volumes:
       - ./src:/app
@@ -61,7 +61,7 @@ services:
       dockerfile: Dockerfile
     container_name: kuponum_celery_beat
     env_file:
-      - ../.env-production
+      - .env-production
     command: celery --app=kuponum beat -l INFO
     volumes:
       - ./src:/app
