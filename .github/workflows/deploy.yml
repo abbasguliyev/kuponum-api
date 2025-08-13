@@ -42,15 +42,15 @@ jobs:
               echo ".git directory NOT FOUND"
             fi
 
-            # Repo yoxdursa klonla, varsa main-ə reset et
-            if test ! -d .git; then
-              echo "Git repo tapılmadı, klonlayıram..."
-              git clone "$REPO_URL" .
-            else
-              echo "Repo tapıldı, origin/main-ə sinxronizə edirəm..."
-              git fetch --all
-              git reset --hard origin/main
-            fi
+            # # Repo yoxdursa klonla, varsa main-ə reset et
+            # if test ! -d .git; then
+            #   echo "Git repo tapılmadı, klonlayıram..."
+            #   git clone "$REPO_URL" .
+            # else
+            #   echo "Repo tapıldı, origin/main-ə sinxronizə edirəm..."
+            #   git fetch --all
+            #   git reset --hard origin/main
+            # fi
 
             # # entrypoint.sh permission
             # chmod +x ./src/entrypoint.sh
